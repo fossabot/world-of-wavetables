@@ -2,12 +2,17 @@ import typing
 import librosa
 from more_itertools import sample
 import numpy as np
-import soundfile as sf
+import soundfile
 import os
 
-from os_utils import create_directory_if_not_exist
+import typer
+import string_utils
 
-def find_zero_crossings(samples: np.ndarray, split_level_percentage=.005):
+from os_utils import create_directory_if_not_exist
+import os_utils
+
+
+def get_zero_crossings(samples: np.ndarray):
     zero_crossings = librosa.zero_crossings(samples)
     zero_crossing_indexes = np.nonzero(zero_crossings)
     if len(zero_crossing_indexes) > 1: raise "Please convert your sample to mono."
@@ -17,23 +22,63 @@ def find_zero_crossings(samples: np.ndarray, split_level_percentage=.005):
     if zero_crossing_indexes_array.size % 2 != 0:
         zero_crossing_indexes_array = zero_crossing_indexes_array[:zero_crossing_indexes_array.size - 1]
 
-    split_indexes = np.array([zero_crossing_indexes_array[n] % int(zero_crossing_indexes_array.size * split_level_percentage) == 0 for n in range(zero_crossing_indexes_array.size)])
-    
+    return zero_crossing_indexes_array
+
+def calculate_magic_modulo_at_index(index: int, zero_crossings: np.ndarray, split_level_percentage=.005):
+    return zero_crossings[index] % int(zero_crossings.size * split_level_percentage) == 0
+
+def find_zero_crossings_at_magic_modulo(samples: np.ndarray):
+    zero_crossings = get_zero_crossings(samples)
+
+    split_indexes = np.ndarray([])
+    for n in range(zero_crossings.size):
+        split_indexes = np.append(split_indexes, calculate_magic_modulo_at_index(n, zero_crossings=zero_crossings))
+
     result_zero_crossing_indexes = []
     for i in range(split_indexes.size):
         if split_indexes[i] == True:
-            result_zero_crossing_indexes.append(zero_crossing_indexes_array[i])
+            result_zero_crossing_indexes.append(zero_crossings[i])
 
     return np.array(result_zero_crossing_indexes)
+
+
+"""
+    This should split into n'th samples but where n'th is below total zero_crossings.
+"""
+def find_zero_crossings(samples: np.ndarray, splits = 4):
+    zero_crossings = get_zero_crossings(samples)
+
+    # split_indexes = np.ndarray([])
+    # for n in range(zero_crossings.size):
+    #     print(int(zero_crossings.size * split_level_percentage))
+    #     if zero_crossings[n] % int(zero_crossings.size * split_level_percentage) == 0:
+    #         split_indexes = np.append(split_indexes, zero_crossings[n])
+
+    # result_zero_crossing_indexes = []
+    # for i in range(split_indexes.size):
+    #     if split_indexes[i] == True:
+    #         result_zero_crossing_indexes.append(zero_crossings[i])
+
+    return np.array([])
 
 
 def load_wavefile(filepath: str, mono = False) -> typing.Tuple[np.ndarray, int]:
     return librosa.load(filepath, mono=mono)
 
 
+def split_wavefile_into_microsamples_magic(samples: np.ndarray) -> typing.List:
+    micro_samples = []
+    crossings = find_zero_crossings_at_magic_modulo(samples)
+
+    for n in range(crossings.size - 1):
+        micro_samples.append(samples[crossings[n]:crossings[n+1]])
+
+    return micro_samples
+
+
 def split_wavefile_into_microsamples(samples: np.ndarray) -> typing.List:
     micro_samples = []
-    crossings = find_zero_crossings(samples)
+    crossings = find_zero_crossings(samples, 4)
 
     for n in range(crossings.size - 1):
         micro_samples.append(samples[crossings[n]:crossings[n+1]])
@@ -42,20 +87,33 @@ def split_wavefile_into_microsamples(samples: np.ndarray) -> typing.List:
 
 
 def write_microsamples(
-    list_of_microsamples, 
-    directory_path: str,
-    filename_prefix: str,
+    list_of_microsamples: typing.List, 
+    relative_folder_path: str,
     samplerate=44100
 ):
-    if not directory_path: return
-    if not list_of_microsamples or not len(list_of_microsamples) > 0: return
+    if not relative_folder_path: raise "Missing relative_folder_path."
 
-    file_index = 0
-    for micro_sample in list_of_microsamples:
-        create_directory_if_not_exist(directory_path)
-        sf.write(
-            os.path.join(directory_path, filename_prefix + "_" + str(file_index) + ".wav"), 
-            micro_sample,
-            samplerate=samplerate
-        )
-        file_index += 1
+    root_folder: str = ".\\microsamples"
+
+    create_directory_if_not_exist(root_folder)
+
+    directory = os.path.join(root_folder, string_utils.strip_symbols_from_path_name(relative_folder_path))
+
+    if not list_of_microsamples or len(list_of_microsamples) <= 0: raise "Missing list of microsamples or empty."
+    if os_utils.does_folder_exist(directory): raise "Folder exists, please set a new name."
+
+    with typer.progressbar(list_of_microsamples) as progress:
+        for micro_sample in progress:
+            filename = "temp.wav"
+            filepath = os.path.join(directory, filename)
+
+            create_directory_if_not_exist(directory)
+            soundfile.write(
+                filepath,
+                micro_sample,
+                samplerate=samplerate
+            )
+
+            os_utils.sha256_hash_file(filepath=filepath, filename=filename)
+            
+            typer.echo("- created microsample")
