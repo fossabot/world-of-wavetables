@@ -1,12 +1,25 @@
+import typing
 from osc_gen import wavetable
 from osc_gen import sig
+import numpy as np
 import wavetable_utils
 
-def morph_two_wavetables(wavetable_A: wavetable.WaveTable, wavetable_B: wavetable.WaveTable, times_cycle=32):
-    wavetable_utils.visualize_wavetable(wavetable_A, save=False)
-    wavetable_utils.visualize_wavetable(wavetable_B, save=False)
 
-    return wavetable.WaveTable(times_cycle, 
+def morph_n_wavetables(wavetables: typing.List[wavetable.WaveTable], times_cycle=32):
+    if not wavetables or len(wavetables) <= 0: raise "No wavetables found"
+    if len(wavetables) > times_cycle: raise "Too many wavetables, must be below times_cycle"
+
+    signals = list(map(lambda wt: wt.get_wave_at_index(0), wavetables))
+
+    return wavetable.WaveTable(
+        times_cycle, 
+        waves=sig.morph(tuple(signals), times_cycle)
+    )
+
+
+def morph_two_wavetables(wavetable_A: wavetable.WaveTable, wavetable_B: wavetable.WaveTable, times_cycle=32):
+    return wavetable.WaveTable(
+        times_cycle, 
         waves=sig.morph((
             wavetable_A.get_wave_at_index(0),
             wavetable_B.get_wave_at_index(0)

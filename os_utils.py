@@ -1,13 +1,12 @@
+import datetime
+import math
 import os
 import hashlib
 import uuid
 
-def uuid_identifier():
+
+def generate_unique_filename():
     return str(uuid.uuid4())
-
-
-def generate_unique_filename(filetype = ".wav"):
-    return uuid_identifier() + filetype
 
 
 """
@@ -40,4 +39,8 @@ def does_folder_exist(filepath):
 
 def create_directory_if_not_exist(filepath):
     if not does_folder_exist(filepath=filepath):
-        os.mkdir(filepath)
+        os.makedirs(filepath)
+
+
+def create_timestamp():
+    return str(math.trunc(datetime.datetime.now().timestamp()))

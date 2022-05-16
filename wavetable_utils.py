@@ -14,8 +14,11 @@ def create_render_directory():
     os_utils.create_directory_if_not_exist(render_directory())
 
 
-def visualize_wavetable(wavetable, directory, filename, save=False):
+def visualize_wavetable(wavetable, directory='', filename='', save=False):
     if save:
+        if not len(directory) > 0: raise "Missing directory parameter"
+        if not len(filename) > 0: raise "Missing filename parameter"
+
         filepath = os.path.join(directory, filename)
 
         visualize.plot_wavetable(wavetable, save=filepath)
@@ -33,16 +36,19 @@ def save_wavetable(filepath, wavetable):
 
 
 def process_wavetable(
-    wavetable: wavetable.WaveTable,
-    visualize: bool = True
+    wavetable: wavetable.WaveTable
 ):
     if not wavetable: raise "Wavetable must be given, process failed."
 
-    root_folder = ".\wavetables" # TODO: What to do with folder limit???
+    root_folder = os.path.join(".\\wavetables", os_utils.create_timestamp()) # TODO: What to do with folder limit???
 
     os_utils.create_directory_if_not_exist(root_folder)
-    filename = os_utils.generate_unique_filename()
+    wavetable_filename, graph_filename = generate_wavetable_filename()
 
-    visualize_wavetable(wavetable, root_folder, filename=filename, save=True)
-    save_wavetable(os.path.join(root_folder, filename), wavetable)
+    visualize_wavetable(wavetable, root_folder, filename=graph_filename, save=True)
+    save_wavetable(os.path.join(root_folder, wavetable_filename), wavetable)
     
+
+def generate_wavetable_filename():
+    unique_filename = os_utils.generate_unique_filename()
+    return (unique_filename + ".wav", unique_filename + ".png")

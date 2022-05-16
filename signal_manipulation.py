@@ -1,3 +1,4 @@
+from textwrap import indent
 import typing
 import librosa
 from more_itertools import sample
@@ -104,16 +105,15 @@ def write_microsamples(
 
     with typer.progressbar(list_of_microsamples) as progress:
         for micro_sample in progress:
-            filename = "temp.wav"
-            filepath = os.path.join(directory, filename)
+            index = str(progress.pos + 1)
+            filepath = os.path.join(directory, index + "-" + os_utils.generate_unique_filename())
 
             create_directory_if_not_exist(directory)
+
             soundfile.write(
                 filepath,
                 micro_sample,
                 samplerate=samplerate
             )
 
-            os_utils.sha256_hash_file(filepath=filepath, filename=filename)
-            
-            typer.echo("- created microsample")
+            typer.echo("- created microsample with index [" + index + "]")
