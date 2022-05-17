@@ -14,7 +14,6 @@ def interpolate_n_wavetables(
     wavetable_paths: typing.List[str],
 ):
     if not wavetable_paths or len(wavetable_paths) <= 0: return
-    print(len(wavetable_paths),wavetable_paths)
 
     typer.echo("- Loading wavetables")
 
