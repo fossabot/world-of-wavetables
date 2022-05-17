@@ -2,8 +2,8 @@ import typing
 import typer
 import wavetable_utils
 import wavetable_morphing
-import signal_manipulation
-import signal_showcase
+import sample_manipulation
+import sample_showcase
 
 app = typer.Typer()
 
@@ -87,8 +87,8 @@ def interpolate_wavetable_to_zero(
 
 @app.command()
 def showcase_wavefile(import_filepath: str):
-    samples, samplerate = signal_manipulation.load_wavefile(import_filepath)
-    signal_showcase.visualize_signal(samples)
+    samples, samplerate = sample_manipulation.load_wavefile(import_filepath)
+    sample_showcase.visualize_signal(samples)
 
 
 @app.command()
