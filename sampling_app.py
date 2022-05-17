@@ -1,43 +1,64 @@
+from random import sample
 import typer
 import wavetable_utils
-import signal_manipulation
+import sample_manipulation
 
 app = typer.Typer()
 
+
+"""
+    Split loaded sample into "micro-samples".
+    Each "micro-sample" gets saved into a given directory.
+"""
 @app.command()
 def split_into_microsamples_magic(
-    export_directory_path: str,
+    export_name: str,
     import_filepath: str,
 ):
-    """
-       Split loaded sample into "micro-samples".
-       Each "micro-sample" gets saved into a given directory.
-    """
-    samples, samplerate = signal_manipulation.load_wavefile(import_filepath, mono=True)
+    samples, samplerate = sample_manipulation.load_wavefile(import_filepath, mono=True)
     if not samples.any(): raise "Failed to load wavefile."
     
-    micro_samples = signal_manipulation.split_wavefile_into_microsamples_magic(samples)
-    if not micro_samples: raise "Microsample split failed."
+    micro_samples = sample_manipulation.split_wavefile_into_microsamples_magic(samples)
+    if not micro_samples.any(): raise "Microsample split failed."
 
-    signal_manipulation.write_microsamples(
-        micro_samples, 
-        export_directory_path,
+    sample_manipulation.write_microsamples(
+        micro_samples,
+        export_name,
         samplerate=samplerate
     )
 
 
+@app.command()
+def split_into_microsamples(
+    export_name: str,
+    import_filepath: str,
+    sample_times: int = typer.Argument(4)
+):
+    samples, samplerate = sample_manipulation.load_wavefile(import_filepath, mono=True)
+    if not samples.any(): raise "Failed to load wavefile."
+
+    micro_samples = sample_manipulation.split_wavefile_into_microsamples(samples, split=sample_times)
+    if not micro_samples.any(): raise "Microsample split failed."
+    
+    sample_manipulation.write_microsamples(
+        micro_samples,
+        export_name,
+        samplerate=samplerate
+    )
+
+
+"""
+    Process given sample (.wav) to wavetable.
+    Splits it into slices by using zero crossings and picking .005% of total sampled zero crossings.
+    Afterwards generates an wavetable image and process its contents to generate an unique SHA256 name.
+    After all is done save the wavetable.
+"""
 @app.command()
 def process_sample_to_wavetable(
     import_filepath = typer.Argument(None),
     export_directory = typer.Argument(None),
     visualize_wavetable: bool = True
 ):
-    """
-        Process given sample (.wav) to wavetable.
-        Splits it into slices by using zero crossings and picking .005% of total sampled zero crossings.
-        Afterwards generates an wavetable image and process its contents to generate an unique SHA256 name.
-        After all is done save the wavetable.
-    """
     if not import_filepath: return
     if not export_directory: return
 
