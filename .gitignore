@@ -1,6 +1,7 @@
 /renders
-**/samples/**/*
-**/microsamples/**/*
-**/wavetables/**/*
+**/samples/*
+**/microsamples/*
+**/wavetables/*
 **/__pycache__
+!**/.gitkeep
 /framework/src/wowt.egg-info
