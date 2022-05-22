@@ -1,4 +1,3 @@
-from random import sample
 import typer
 import wavetable_utils
 import sample_manipulation

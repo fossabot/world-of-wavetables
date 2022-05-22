@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import wowt_app
 
 app = FastAPI()
 
@@ -8,4 +9,4 @@ async def main():
 
 @app.get("/about")
 async def version():
-    pass
+    return wowt_app.version()
