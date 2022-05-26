@@ -17,9 +17,9 @@ export class FileUploadComponent implements OnInit {
 
   selectedFiles: File[] | undefined = undefined;
 
-  @Output() fileSelection = new EventEmitter<FormData | null>()
+  @Output() fileSelection = new EventEmitter<File[]>()
 
-  readonly FORMDATA_GENERIC_FILE = "genericfile"
+  readonly FORMDATA_FILE = "file"
 
   constructor() { }
 
@@ -45,11 +45,7 @@ export class FileUploadComponent implements OnInit {
     this.selectedFiles = this.queryFiles(fileInputElement)
 
     if (this.selectedFiles) {
-      const formData = this.createFormData()
-
-      this.fileSelection.next(formData)
-    } else {
-      this.fileSelection.next(null)
+      this.fileSelection.next(this.selectedFiles)
     }
   }
 
@@ -111,7 +107,7 @@ export class FileUploadComponent implements OnInit {
   appendFilesToFormData(formData: FormData, files: File[]) {
     files.forEach((file) => {
       if (!file) { return; }
-      formData.append(this.FORMDATA_GENERIC_FILE, file, file.name)
+      formData.append(this.FORMDATA_FILE, file, file.name)
     })
   }
 
