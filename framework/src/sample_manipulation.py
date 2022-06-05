@@ -75,8 +75,8 @@ def find_zero_crossings(samples: np.ndarray, split_count):
     return np.array(chunks)
 
 
-def load_wavefile(filepath: str, mono = False) -> typing.Tuple[np.ndarray, int]:
-    return librosa.load(filepath, mono=mono)
+def load_wavefile(filepath: str, sr=44100, mono = False) -> typing.Tuple[np.ndarray, int]:
+    return librosa.load(filepath, sr=sr, mono=mono)
 
 
 """
@@ -134,3 +134,16 @@ def write_microsamples(
             )
 
             typer.echo("- created microsample with index [" + index + "]")
+
+
+def sample_info(filepath: str):
+    samples, samplerate = load_wavefile(filepath, mono = False)
+
+    result = {
+        "data": samples, 
+        "samplerate": samplerate, 
+        "length": samples.size,
+        "dimensions": samples.shape
+    }
+
+    return result
