@@ -43,7 +43,9 @@ export class FileUploadComponent implements OnInit {
     }
 
     this.selectedFiles = this.queryFiles(fileInputElement)
+  }
 
+  upload() {
     if (this.selectedFiles) {
       this.fileSelection.next(this.selectedFiles)
     }

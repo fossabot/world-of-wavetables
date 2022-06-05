@@ -11,5 +11,6 @@
     No file uploaded yet.
   </ng-template>
 
-  <button (click)="fileInput.click()">Upload File</button>
+  <button (click)="fileInput.click()">Load File</button>
+  <button *ngIf="selectedFiles && selectedFiles.length > 0" (click)="upload()">Upload File</button>
 </div>

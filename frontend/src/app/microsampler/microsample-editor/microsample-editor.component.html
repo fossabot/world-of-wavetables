@@ -1,7 +1,8 @@
 <p>microsample-editor works!</p>
 
 <div>
-  <img src="https://dummyimage.com/640x240/000/fff">
+  <!-- <wowt-waveform [samplefile]="file"></wowt-waveform> -->
+  <wowt-wavesurfer [samplefile]="file"></wowt-wavesurfer>
 </div>
 
 <wowt-file-upload [filetypes]="['wav']" (fileSelection)="processFirstFile($event)"></wowt-file-upload>

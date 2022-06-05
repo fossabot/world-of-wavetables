@@ -1,6 +1,5 @@
 import { FormDataBuilderService } from '../../forms/form-data-builder.service';
 import { Component, OnInit } from '@angular/core';
-import { SamplingApi } from 'src/environments/server/sampling.api';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -25,11 +24,11 @@ export class MicrosampleEditorComponent implements OnInit {
     const [file] = files
     if (file) {
       this.file = file;
-      const formData = this.formDataBuilder.new().append('file', file, file.name).build()
-
-      this.http.post(SamplingApi.waveform, formData).subscribe((v) => {
-        console.log(v)
-      })
+      console.log("Uploaded file", file)
+      // const formData = this.formDataBuilder.new().append('file', file, file.name).build()
+      // this.http.post(SamplingApi.waveform, formData).subscribe((v) => {
+      //   console.log(v)
+      // })
     }
   }
 }

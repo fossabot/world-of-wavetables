@@ -10,6 +10,7 @@ import { MicrosampleEditorComponent } from './microsampler/microsample-editor/mi
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { WaveformComponent } from './waveform/waveform.component';
 import { HttpClientModule } from '@angular/common/http';
+import { WavesurferComponent } from './waveform/wavesurfer/wavesurfer.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
     MicrosampleEditorComponent,
     FileUploadComponent,
     WaveformComponent,
+    WavesurferComponent,
    ],
   imports: [
     BrowserModule,
