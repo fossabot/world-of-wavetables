@@ -11,7 +11,7 @@ app.add_typer(wavetable_app.app, name="wavetable")
 # Global commands
 @app.command()
 def version():
-    version_text = "[World of Wavetables | Backend | v0.1 | David Dembinski]"
+    version_text = "[World of Wavetables | Backend | v0.1 | Inflamously]"
     typer.echo(version_text)
     return version_text
 

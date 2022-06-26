@@ -14,6 +14,6 @@ async def main():
     return { "status": 200 }
 
 
-@app.get("/about")
+@app.get("/version")
 async def version():
     return wowt_app.version()
