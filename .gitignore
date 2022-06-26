@@ -6,5 +6,5 @@
 !**/.gitkeep
 **/*.egg-info
 **/*.egg
-**/venv/Include
-**/venv/Lib
+**/venv
+**/build
