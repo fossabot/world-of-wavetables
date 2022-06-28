@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from routers import sampling
 import server_cors
-import wowt_app
-
+from wowt import wowt_app
 
 app = FastAPI()
 app.include_router(sampling.router)
