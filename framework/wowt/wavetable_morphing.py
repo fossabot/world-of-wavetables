@@ -2,7 +2,7 @@ import typing
 from osc_gen import wavetable
 from osc_gen import sig
 import numpy as np
-import wavetable_utils
+from . import wavetable_utils
 
 
 def morph_n_wavetables(wavetables: typing.List[wavetable.WaveTable], times_cycle=32):

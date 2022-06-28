@@ -1,6 +1,6 @@
 import typer
-import wavetable_utils
-import sample_manipulation
+from . import wavetable_utils
+from . import sample_manipulation
 
 app = typer.Typer()
 
@@ -55,17 +55,30 @@ def split_into_microsamples(
 @app.command()
 def process_sample_to_wavetable(
     import_filepath = typer.Argument(None),
-    export_directory = typer.Argument(None),
-    visualize_wavetable: bool = True
+    tables=typer.Argument(16, min=0, max=32)
 ):
-    if not import_filepath: return
-    if not export_directory: return
+    if not import_filepath: raise "No filepath provided."
 
-    wavetable = wavetable_utils.load_wavetable(import_filepath)
-    if not wavetable: return
+    wavetable = wavetable_utils.load_wavetable(import_filepath, tables=int(tables))
+    if not wavetable: raise "Wavetable conversion failed."
 
     wavetable_utils.process_wavetable(
-        wavetable, 
-        export_directory=export_directory, 
-        visualize_wavetable=visualize_wavetable
+        wavetable
     )
+
+
+@app.command()
+def process_sample_info(
+    import_filepath = typer.Argument(None)
+):
+    if not import_filepath: raise "No filepath provided."
+
+    result = sample_manipulation.sample_info(import_filepath)
+
+    typer.echo(result)
+
+    return result
+
+
+if __name__ == '__main__':
+    app()

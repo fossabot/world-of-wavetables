@@ -6,11 +6,8 @@ import os
 import math
 
 import typer
-import string_utils
-
-from os_utils import create_directory_if_not_exist
-import os_utils
-
+from . import string_utils
+from . import os_utils
 
 def get_zero_crossings(samples: np.ndarray):
     zero_crossings = librosa.zero_crossings(samples)
@@ -75,8 +72,8 @@ def find_zero_crossings(samples: np.ndarray, split_count):
     return np.array(chunks)
 
 
-def load_wavefile(filepath: str, mono = False) -> typing.Tuple[np.ndarray, int]:
-    return librosa.load(filepath, mono=mono)
+def load_wavefile(filepath: str, sr=44100, mono = False) -> typing.Tuple[np.ndarray, int]:
+    return librosa.load(filepath, sr=sr, mono=mono)
 
 
 """
@@ -113,7 +110,7 @@ def write_microsamples(
 
     root_folder: str = ".\\microsamples"
 
-    create_directory_if_not_exist(root_folder)
+    os_utils.create_directory_if_not_exist(root_folder)
 
     directory = os.path.join(root_folder, string_utils.strip_symbols_from_path_name(relative_folder_path))
 
@@ -125,7 +122,7 @@ def write_microsamples(
             index = str(progress.pos + 1)
             filepath = os.path.join(directory, index + "-" + os_utils.generate_unique_filename() + '.wav')
 
-            create_directory_if_not_exist(directory)
+            os_utils.create_directory_if_not_exist(directory)
 
             soundfile.write(
                 filepath,
@@ -134,3 +131,16 @@ def write_microsamples(
             )
 
             typer.echo("- created microsample with index [" + index + "]")
+
+
+def sample_info(filepath: str):
+    samples, samplerate = load_wavefile(filepath, mono = False)
+
+    result = {
+        "data": samples, 
+        "samplerate": samplerate, 
+        "length": samples.size,
+        "dimensions": samples.shape
+    }
+
+    return result

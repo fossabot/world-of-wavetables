@@ -4,4 +4,7 @@
 **/wavetables/*
 **/__pycache__
 !**/.gitkeep
-/framework/src/wowt.egg-info
+**/*.egg-info
+**/*.egg
+**/venv
+**/build

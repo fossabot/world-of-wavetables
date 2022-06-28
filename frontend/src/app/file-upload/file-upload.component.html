@@ -1,0 +1,16 @@
+<input type="file" hidden (change)="emitFileSelection($event)" #fileInput>
+
+<div>
+  <div *ngIf="selectedFiles else noFiles">
+    <div *ngFor="let selectedFile of selectedFiles">
+      {{ selectedFile.name }}
+    </div>
+  </div>
+
+  <ng-template #noFiles>
+    No file uploaded yet.
+  </ng-template>
+
+  <button (click)="fileInput.click()">Load File</button>
+  <button *ngIf="selectedFiles && selectedFiles.length > 0" (click)="upload()">Upload File</button>
+</div>
