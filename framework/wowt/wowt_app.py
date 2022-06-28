@@ -1,6 +1,6 @@
 import typer
-import sampling_app
-import wavetable_app
+from . import sampling_app
+from . import wavetable_app
 
 # Initalize Typer
 app = typer.Typer()

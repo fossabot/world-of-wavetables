@@ -1,6 +1,6 @@
 import typer
-import wavetable_utils
-import sample_manipulation
+from . import wavetable_utils
+from . import sample_manipulation
 
 app = typer.Typer()
 
@@ -78,3 +78,7 @@ def process_sample_info(
     typer.echo(result)
 
     return result
+
+
+if __name__ == '__main__':
+    app()

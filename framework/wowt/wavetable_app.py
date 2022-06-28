@@ -1,9 +1,9 @@
 import typing
 import typer
-import wavetable_utils
-import wavetable_morphing
-import sample_manipulation
-import sample_showcase
+from . import wavetable_utils
+from . import wavetable_morphing
+from . import sample_manipulation
+from . import sample_showcase
 
 app = typer.Typer()
 

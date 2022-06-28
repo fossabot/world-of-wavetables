@@ -6,11 +6,8 @@ import os
 import math
 
 import typer
-import string_utils
-
-from os_utils import create_directory_if_not_exist
-import os_utils
-
+from . import string_utils
+from . import os_utils
 
 def get_zero_crossings(samples: np.ndarray):
     zero_crossings = librosa.zero_crossings(samples)
@@ -113,7 +110,7 @@ def write_microsamples(
 
     root_folder: str = ".\\microsamples"
 
-    create_directory_if_not_exist(root_folder)
+    os_utils.create_directory_if_not_exist(root_folder)
 
     directory = os.path.join(root_folder, string_utils.strip_symbols_from_path_name(relative_folder_path))
 
@@ -125,7 +122,7 @@ def write_microsamples(
             index = str(progress.pos + 1)
             filepath = os.path.join(directory, index + "-" + os_utils.generate_unique_filename() + '.wav')
 
-            create_directory_if_not_exist(directory)
+            os_utils.create_directory_if_not_exist(directory)
 
             soundfile.write(
                 filepath,

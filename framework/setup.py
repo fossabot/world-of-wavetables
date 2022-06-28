@@ -5,7 +5,7 @@ setuptools.setup(
     version='1.0.0',
     author='inflamous',
     author_email='',
-    packages=setuptools.find_packages(),
+    packages=['wowt'],
     url='https://github.com/inflamously/world-of-wavetables',
     license='LICENSE.txt',
     description='Create wavetables from sample, combine and mix them up.',

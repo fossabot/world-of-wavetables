@@ -1,10 +1,9 @@
+import os
 from osc_gen import sig
 from osc_gen import wavetable
 from osc_gen import visualize
 from uuid import uuid4
-import os_utils
-import os
-
+from . import os_utils
 
 def render_directory():
     return os.path.join(os.getcwd(), 'renders')
