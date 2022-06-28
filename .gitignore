@@ -1,2 +1,10 @@
 /renders
-/samples
+**/samples/*
+**/microsamples/*
+**/wavetables/*
+**/__pycache__
+!**/.gitkeep
+**/*.egg-info
+**/*.egg
+**/venv
+**/build
